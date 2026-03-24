@@ -1,0 +1,11 @@
+div.container_list_clients {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+div.container_list_clients h2.title {
+    color: #000;
+    font-size: 20px;
+    font-weight: 700;
+}

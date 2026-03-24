@@ -1,0 +1,35 @@
+.mainContainer {
+    background-color: #fcfcfc;
+    min-height: 100vh;
+}
+
+.title {
+    font-weight: 800 !important;
+    color: #4f46e5;
+}
+
+.addButton {
+    border-radius: 8px !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+.tablePaper {
+    height: 550px;
+    width: 100%;
+    border-radius: 12px !important;
+    overflow: hidden;
+    background-color: white;
+}
+
+.tablePaper :global(.MuiDataGrid-footerContainer) {
+    border-top: 1px solid #eef2f6;
+    background-color: #f8fafc;
+}
+
+.tablePaper :global(.MuiDataGrid-columnHeaderTitle) {
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}

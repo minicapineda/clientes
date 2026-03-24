@@ -1,0 +1,15 @@
+services:
+  clientes:
+    container_name: clientes
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    ports:
+      - "5171:5171"
+    volumes:
+      - ./src/package.json:/app/package.json
+      - ./src/vite.config.ts:/app/vite.config.ts
+      - ./src/src:/app/src 
+      - /app/node_modules
+      - /app/dist
