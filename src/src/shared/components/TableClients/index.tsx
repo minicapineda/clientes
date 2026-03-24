@@ -12,7 +12,7 @@ import type { GridColDef } from '@mui/x-data-grid';
 
 interface ClientRow {
   id: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface TableClientsProps {
@@ -22,11 +22,14 @@ interface TableClientsProps {
 }
 
 const DEFAULT_ROWS = [
-  { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Senior Developer', estado: 'Activo' },
-  { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema', estado: 'Pendiente' },
-  { id: 3, nombre: 'Juan', apellido: 'Pérez', profesion: 'Auditor', estado: 'Activo' },
-  { id: 4, nombre: 'Elena', apellido: 'Gómez', profesion: 'Documentalista', estado: 'Inactivo' },
-  { id: 5, nombre: 'Luis', apellido: 'Gómez', profesion: 'Documentalista', estado: 'Inactivo' },
+ { id: 1, maduro: 'Mónica', chavez: 'Villegas', uribe: 'Developer', petro: new Date() },
+ { id: 2, maduro: 'luis', chavez: 'penalaloza', uribe: 'Developer', petro: new Date() },
+ { id: 3, maduro: 'yorluis', chavez: 'vega', uribe: 'Developer', petro: new Date() },
+ { id: 4, maduro: 'freymar', chavez: 'sanchez', uribe: 'Developer', petro: new Date() },
+ { id: 5, maduro: 'josver', chavez: 'parra', uribe: 'Developer', petro: new Date() },
+ { id: 6, maduro: 'duban', chavez: 'velez', uribe: 'Developer', petro: new Date() },
+ { id: 7, maduro: 'david', chavez: 'parra', uribe: 'Developer', petro: new Date() },
+ { id: 8, maduro: 'tatiana', chavez: 'peña', uribe: 'Recursos', petro: new Date() },
 ];
 
 export const TableClients = ({ 

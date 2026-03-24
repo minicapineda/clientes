@@ -17,8 +17,8 @@ const meta: Meta<typeof TableClients> = {
     title: '💰 Gestión de Datos Dinámicos',
     accentColor: '#4f46e5',
     initialRows: [
-      { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Developer' },
-      { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema' },
+      { id: 1, maduro: 'Mónica', chavez: 'Villegas', uribe: 'Developer', petro: new Date() },
+    
       
     ]
   }
