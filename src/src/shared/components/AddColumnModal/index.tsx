@@ -1,16 +1,27 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { 
   Dialog, DialogTitle, DialogContent, DialogActions, 
   TextField, Button, Typography 
 } from '@mui/material';
 
+
 interface AddColumnModalProps {
   open: boolean;
   onClose: () => void;
   onAdd: (name: string) => void;
+  title?: string;
+  buttonColor?: string;
+  helperText?: string;
 }
 
-export const AddColumnModal = ({ open, onClose, onAdd }: AddColumnModalProps) => {
+export const AddColumnModal = ({ 
+  open, 
+  onClose, 
+  onAdd,
+  title = "Nueva Columna",
+  buttonColor = "#4f46e5",
+  helperText = "Escribe el nombre de la columna que quieres añadir a la tabla."
+}: AddColumnModalProps) => {
   const [newColName, setNewColName] = useState('');
 
   const handleConfirm = () => {
@@ -27,10 +38,10 @@ export const AddColumnModal = ({ open, onClose, onAdd }: AddColumnModalProps) =>
 
   return (
     <Dialog open={open} onClose={handleCancel} fullWidth maxWidth="xs">
-      <DialogTitle sx={{ fontWeight: 'bold' }}>Nueva Columna</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 'bold' }}>{title}</DialogTitle>
       <DialogContent>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Escribe el nombre de la columna que quieres añadir a la tabla.
+          {helperText}
         </Typography>
         <TextField
           autoFocus
@@ -49,7 +60,10 @@ export const AddColumnModal = ({ open, onClose, onAdd }: AddColumnModalProps) =>
           onClick={handleConfirm} 
           variant="contained" 
           disabled={!newColName.trim()}
-          sx={{ backgroundColor: '#4f46e5' }}
+          sx={{ 
+            backgroundColor: buttonColor, 
+            '&:hover': { backgroundColor: buttonColor } 
+          }}
         >
           Crear Columna
         </Button>

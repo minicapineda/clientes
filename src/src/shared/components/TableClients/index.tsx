@@ -11,35 +11,52 @@ import { AddColumnModal } from '../AddColumnModal';
 import styles from "./tableclients.module.css";
 import type { GridColDef } from '@mui/x-data-grid';
 
-export const TableClients = () => {
+interface ClientRow {
+  id: number;
+  [key: string]: any;
+}
 
-  const [rows, setRows] = useState(rows_ejemplo);
-  
+interface TableClientsProps {
+  title?: string;
+  initialRows?: ClientRow[];
+  accentColor?: string;
+}
 
+export const TableClients = ({ 
+  title = "💰 Gestión de Datos Dinámicos",
+  accentColor = "#4f46e5",
+  initialRows = [
+    { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Developer' },
+    { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema' },
+  ] 
+}: TableClientsProps) => {
+
+  const [rows, setRows] = useState<ClientRow[]>(initialRows);
   const [columns, setColumns] = useState<GridColDef[]>([]);
   const [visibleFields, setVisibleFields] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState(false);
 
 
   useEffect(() => {
+    setRows(initialRows);
+  }, [initialRows]);
+
+
+  useEffect(() => {
     if (rows.length > 0) {
-   
       const generatedCols: GridColDef[] = Object.keys(rows[0]).map((key) => ({
         field: key,
- 
         headerName: key.charAt(0).toUpperCase() + key.slice(1),
         flex: 1,
         minWidth: 150,
         editable: true,
       }));
-
       setColumns(generatedCols);
-  
       setVisibleFields(generatedCols.map(c => c.field));
     }
-  }, []);
+  }, [rows]);
 
-  const handleProcessRowUpdate = (newRow: any) => {
+  const handleProcessRowUpdate = (newRow: ClientRow) => {
     const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
     setRows(updatedRows);
     return newRow;
@@ -70,12 +87,11 @@ export const TableClients = () => {
   return (
     <Box className={styles.mainContainer} sx={{ width: '100%', p: { xs: 1, md: 3 }, boxSizing: 'border-box' }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-        <Typography variant="h4" className={styles.title}>
-          💰 Gestión de Datos Dinámicos
+        <Typography variant="h4" className={styles.title} sx={{ color: accentColor }}>
+          {title}
         </Typography>
 
         <Stack direction="row" spacing={2} alignItems="center">
-     
           <FormControl size="small" sx={{ width: 220 }}>
             <InputLabel>Columnas Visibles</InputLabel>
             <Select
@@ -98,7 +114,7 @@ export const TableClients = () => {
             variant="outlined" 
             startIcon={<AddCircleOutlineIcon />}
             onClick={() => setOpenModal(true)} 
-            className={styles.addButton}
+            sx={{ borderColor: accentColor, color: accentColor, '&:hover': { borderColor: accentColor } }}
           >
             Añadir Columna
           </Button>
@@ -112,6 +128,7 @@ export const TableClients = () => {
           localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           processRowUpdate={handleProcessRowUpdate}
           disableRowSelectionOnClick
+          autoHeight
           sx={{ border: 'none' }}
         />
       </Paper>
@@ -119,16 +136,11 @@ export const TableClients = () => {
       <AddColumnModal
         open={openModal} 
         onClose={() => setOpenModal(false)} 
-        onAdd={handleAddColumn} 
+        onAdd={handleAddColumn}
+        buttonColor={accentColor} 
       />
     </Box>
   );
 };
-
-
-const rows_ejemplo = [
-  { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Developer' },
-  { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema' },
-];
 
 export default TableClients;
