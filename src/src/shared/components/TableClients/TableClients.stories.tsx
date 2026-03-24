@@ -18,7 +18,8 @@ const meta: Meta<typeof TableClients> = {
     accentColor: '#4f46e5',
     initialRows: [
       { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Developer' },
-      { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema' }
+      { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema' },
+      
     ]
   }
 };

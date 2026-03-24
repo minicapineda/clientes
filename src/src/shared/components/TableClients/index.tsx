@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { AddColumnModal } from '../AddColumnModal';
-import styles from "./tableclients.module.css";
 import type { GridColDef } from '@mui/x-data-grid';
 
 interface ClientRow {
@@ -22,13 +21,18 @@ interface TableClientsProps {
   accentColor?: string;
 }
 
+const DEFAULT_ROWS = [
+  { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Senior Developer', estado: 'Activo' },
+  { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema', estado: 'Pendiente' },
+  { id: 3, nombre: 'Juan', apellido: 'Pérez', profesion: 'Auditor', estado: 'Activo' },
+  { id: 4, nombre: 'Elena', apellido: 'Gómez', profesion: 'Documentalista', estado: 'Inactivo' },
+  { id: 5, nombre: 'Luis', apellido: 'Gómez', profesion: 'Documentalista', estado: 'Inactivo' },
+];
+
 export const TableClients = ({ 
-  title = "💰 Gestión de Datos Dinámicos",
-  accentColor = "#4f46e5",
-  initialRows = [
-    { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Developer' },
-    { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema' },
-  ] 
+  title = "💰 Gestión de Clientes",
+  accentColor = "#4f46e5", 
+  initialRows = DEFAULT_ROWS 
 }: TableClientsProps) => {
 
   const [rows, setRows] = useState<ClientRow[]>(initialRows);
@@ -36,10 +40,13 @@ export const TableClients = ({
   const [visibleFields, setVisibleFields] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState(false);
 
-
-  useEffect(() => {
-    setRows(initialRows);
-  }, [initialRows]);
+ useEffect(() => {
+ 
+  if (Array.isArray(initialRows)) {
+    const validRows = initialRows.filter(row => typeof row === 'object' && row !== null);
+    setRows(validRows);
+  }
+}, [initialRows]);
 
 
   useEffect(() => {
@@ -48,11 +55,13 @@ export const TableClients = ({
         field: key,
         headerName: key.charAt(0).toUpperCase() + key.slice(1),
         flex: 1,
-        minWidth: 150,
+        minWidth: 120,
         editable: true,
       }));
       setColumns(generatedCols);
-      setVisibleFields(generatedCols.map(c => c.field));
+      if (visibleFields.length === 0) {
+        setVisibleFields(generatedCols.map(c => c.field));
+      }
     }
   }, [rows]);
 
@@ -63,19 +72,12 @@ export const TableClients = ({
   };
 
   const handleAddColumn = (name: string) => {
-    const technicalField = name.toLowerCase().trim().replace(/\s+/g, '_');
-    if (columns.some(col => col.field === technicalField)) {
-      alert("Esta columna ya existe");
-      return;
-    }
-    const newColumn: GridColDef = {
-      field: technicalField,
-      headerName: name,
-      width: 150,
-      editable: true
-    };
-    setColumns([...columns, newColumn]);
-    setVisibleFields([...visibleFields, technicalField]);
+    const field = name.toLowerCase().trim().replace(/\s+/g, '_');
+    if (columns.some(col => col.field === field)) return;
+    
+    const newCol: GridColDef = { field, headerName: name, width: 150, editable: true };
+    setColumns([...columns, newCol]);
+    setVisibleFields([...visibleFields, field]);
     setOpenModal(false); 
   };
 
@@ -85,25 +87,26 @@ export const TableClients = ({
   );
 
   return (
-    <Box className={styles.mainContainer} sx={{ width: '100%', p: { xs: 1, md: 3 }, boxSizing: 'border-box' }}>
+    <Box sx={{ width: '100%', p: 3, boxSizing: 'border-box' }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-        <Typography variant="h4" className={styles.title} sx={{ color: accentColor }}>
+
+        <Typography variant="h4" sx={{ color: accentColor, fontWeight: 'bold' }}>
           {title}
         </Typography>
 
-        <Stack direction="row" spacing={2} alignItems="center">
-          <FormControl size="small" sx={{ width: 220 }}>
-            <InputLabel>Columnas Visibles</InputLabel>
+        <Stack direction="row" spacing={2}>
+          <FormControl size="small" sx={{ width: 200 }}>
+            <InputLabel>Columnas</InputLabel>
             <Select
               multiple
               value={visibleFields}
               onChange={(e) => setVisibleFields(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
-              input={<OutlinedInput label="Columnas Visibles" />}
-              renderValue={(selected) => `${selected.length} seleccionadas`}
+              input={<OutlinedInput label="Columnas" />}
+              renderValue={(selected) => `${selected.length} visibles`}
             >
               {columns.map((col) => (
                 <MenuItem key={col.field} value={col.field}>
-                  <Checkbox checked={visibleFields.indexOf(col.field) > -1} />
+                  <Checkbox checked={visibleFields.includes(col.field)} />
                   <ListItemText primary={col.headerName} />
                 </MenuItem>
               ))}
@@ -111,32 +114,45 @@ export const TableClients = ({
           </FormControl>
 
           <Button 
-            variant="outlined" 
+            variant="contained" 
             startIcon={<AddCircleOutlineIcon />}
             onClick={() => setOpenModal(true)} 
-            sx={{ borderColor: accentColor, color: accentColor, '&:hover': { borderColor: accentColor } }}
+    
+            sx={{ 
+                bgcolor: accentColor, 
+                '&:hover': { bgcolor: accentColor, filter: 'brightness(0.8)' } 
+            }}
           >
-            Añadir Columna
+            Nueva Columna
           </Button>
         </Stack>
       </Stack>
 
-      <Paper elevation={4} className={styles.tablePaper}>
+      <Paper elevation={3} sx={{ borderRadius: '12px', overflow: 'hidden' }}>
         <DataGrid
           rows={rows}
           columns={columnsToShow}
           localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           processRowUpdate={handleProcessRowUpdate}
-          disableRowSelectionOnClick
           autoHeight
-          sx={{ border: 'none' }}
+          disableRowSelectionOnClick
+          initialState={{
+            pagination: { paginationModel: { pageSize: 5 } },
+          }}
+          pageSizeOptions={[5, 10]}
+          sx={{ 
+            border: 'none',
+            '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: '#f8fafc',
+            }
+          }}
         />
       </Paper>
 
-      <AddColumnModal
+      <AddColumnModal 
         open={openModal} 
         onClose={() => setOpenModal(false)} 
-        onAdd={handleAddColumn}
+        onAdd={handleAddColumn} 
         buttonColor={accentColor} 
       />
     </Box>
