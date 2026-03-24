@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { DataGrid} from '@mui/x-data-grid';
-import { esES } from '@mui/x-data-grid/locales'; // Traducción oficial
+import { esES } from '@mui/x-data-grid/locales';
 import { 
   Box, Paper, Typography, FormControl, InputLabel, 
   Select, MenuItem, Checkbox, ListItemText, OutlinedInput,
@@ -11,20 +11,34 @@ import { AddColumnModal } from '../AddColumnModal';
 import styles from "./tableclients.module.css";
 import type { GridColDef } from '@mui/x-data-grid';
 
-const INITIAL_COLUMNS: GridColDef[] = [
-  { field: 'id', headerName: 'Factura #', width: 120 },
-  { field: 'cliente', headerName: 'Cliente', flex: 1, minWidth: 200, editable: true },
-  { field: 'monto', headerName: 'Total', type: 'number', width: 150, editable: true },
-  { field: 'estado', headerName: 'Estado', width: 150, editable: true },
-  { field: 'test', headerName: 'test', width: 150, editable: true },
-  { field: 'apellido', headerName: 'apellido', width: 150, editable: true },
-];
-
 export const TableClients = () => {
-  const [columns, setColumns] = useState<GridColDef[]>(INITIAL_COLUMNS);
+
   const [rows, setRows] = useState(rows_ejemplo);
-  const [visibleFields, setVisibleFields] = useState<string[]>(INITIAL_COLUMNS.map(c => c.field));
+  
+
+  const [columns, setColumns] = useState<GridColDef[]>([]);
+  const [visibleFields, setVisibleFields] = useState<string[]>([]);
   const [openModal, setOpenModal] = useState(false);
+
+
+  useEffect(() => {
+    if (rows.length > 0) {
+   
+      const generatedCols: GridColDef[] = Object.keys(rows[0]).map((key) => ({
+        field: key,
+ 
+        headerName: key.charAt(0).toUpperCase() + key.slice(1),
+        flex: 1,
+        minWidth: 150,
+        editable: true,
+      }));
+
+      setColumns(generatedCols);
+  
+      setVisibleFields(generatedCols.map(c => c.field));
+    }
+  }, []);
+
   const handleProcessRowUpdate = (newRow: any) => {
     const updatedRows = rows.map((row) => (row.id === newRow.id ? newRow : row));
     setRows(updatedRows);
@@ -33,34 +47,35 @@ export const TableClients = () => {
 
   const handleAddColumn = (name: string) => {
     const technicalField = name.toLowerCase().trim().replace(/\s+/g, '_');
-    
     if (columns.some(col => col.field === technicalField)) {
       alert("Esta columna ya existe");
       return;
     }
-
     const newColumn: GridColDef = {
       field: technicalField,
       headerName: name,
       width: 150,
       editable: true
     };
-
     setColumns([...columns, newColumn]);
     setVisibleFields([...visibleFields, technicalField]);
     setOpenModal(false); 
   };
 
-  const columnsToShow = columns.filter(col => visibleFields.includes(col.field));
+  const columnsToShow = useMemo(() => 
+    columns.filter(col => visibleFields.includes(col.field)), 
+    [columns, visibleFields]
+  );
 
   return (
     <Box className={styles.mainContainer} sx={{ width: '100%', p: { xs: 1, md: 3 }, boxSizing: 'border-box' }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Typography variant="h4" className={styles.title}>
-          💰 Gestión de Facturas
+          💰 Gestión de Datos Dinámicos
         </Typography>
 
         <Stack direction="row" spacing={2} alignItems="center">
+     
           <FormControl size="small" sx={{ width: 220 }}>
             <InputLabel>Columnas Visibles</InputLabel>
             <Select
@@ -97,7 +112,6 @@ export const TableClients = () => {
           localeText={esES.components.MuiDataGrid.defaultProps.localeText}
           processRowUpdate={handleProcessRowUpdate}
           disableRowSelectionOnClick
-          autoHeight={false}
           sx={{ border: 'none' }}
         />
       </Paper>
@@ -111,9 +125,10 @@ export const TableClients = () => {
   );
 };
 
+
 const rows_ejemplo = [
-  { id: 'INV-001', cliente: 'Mónica Villegas', monto: 150000, estado: 'Pagada', test: 'amarilla', apellido: 'villegas'},
-  { id: 'INV-002', cliente: 'Tienda Central', monto: 85000, estado: 'Pendiente', test: 'amarilla', apellido: 'villegas' },
+  { id: 1, nombre: 'Mónica', apellido: 'Villegas', profesion: 'Developer' },
+  { id: 2, nombre: 'Financia', apellido: 'Crédito', profesion: 'Sistema' },
 ];
 
 export default TableClients;
