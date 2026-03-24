@@ -33,6 +33,7 @@ export default defineConfig({
     target: "esnext", 
     minify: false,
     cssCodeSplit: true, 
+    manifest: true,
     rollupOptions: {
       output: {
         format: "esm",
