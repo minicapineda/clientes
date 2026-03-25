@@ -4,9 +4,8 @@ import { esES } from '@mui/x-data-grid/locales';
 import { 
   Box, Paper, Typography, FormControl, InputLabel, 
   Select, MenuItem, Checkbox, ListItemText, OutlinedInput,
-  Button, Stack 
+   Stack 
 } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { AddColumnModal } from '../AddColumnModal';
 import type { GridColDef } from '@mui/x-data-grid';
 
@@ -116,7 +115,7 @@ export const TableClients = ({
             </Select>
           </FormControl>
 
-          <Button 
+          {/* <Button 
             variant="contained" 
             startIcon={<AddCircleOutlineIcon />}
             onClick={() => setOpenModal(true)} 
@@ -127,7 +126,7 @@ export const TableClients = ({
             }}
           >
             Nueva Columna
-          </Button>
+          </Button> */}
         </Stack>
       </Stack>
 
